@@ -1,5 +1,6 @@
 using FinPilot.Application.Onboarding.StartOnboarding;
 using Microsoft.AspNetCore.Mvc;
+using FinPilot.Application.Onboarding.GetOnboardingById;    
 
 namespace FinPilot.Api.Onboarding;
 
@@ -8,14 +9,16 @@ namespace FinPilot.Api.Onboarding;
 public sealed class OnboardingController : ControllerBase
 {
     private readonly StartOnboardingHandler _handler;
+    private readonly GetOnboardingByIdHandler _getOnboardingByIdHandler;
 
-    public OnboardingController(StartOnboardingHandler handler)
+    public OnboardingController(StartOnboardingHandler handler, GetOnboardingByIdHandler getOnboardingByIdHandler)
     {
-        _handler = new StartOnboardingHandler();
+        _handler = handler;
+        _getOnboardingByIdHandler = getOnboardingByIdHandler;
     }
 
     [HttpPost]
-    public IActionResult Start([FromBody] StartOnboardingRequest request)
+    public async Task<IActionResult> Start([FromBody] StartOnboardingRequest request, CancellationToken cancellationToken)
     {
         if (request == null)
         {
@@ -27,13 +30,21 @@ public sealed class OnboardingController : ControllerBase
             request.Email,
             request.PhoneNumber);
 
-        var result = _handler.Handle(command);
+        var result = await _handler.HandleAsync(command, cancellationToken);
+
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _getOnboardingByIdHandler.HandleAsync(id, cancellationToken);
 
         if (result == null)
         {
-            return StatusCode(500, "An error occurred while processing your request");
+            return NotFound();
         }
 
-        return CreatedAtAction(nameof(Start), result);
+        return Ok(result);
     }
 }

@@ -1,17 +1,17 @@
 using System.Net;
 using System.Net.Http.Json;
+using FinPilot.IntegrationTests.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
-
 namespace FinPilot.IntegrationTests;
 
+
 public sealed class StartOnboardingEndpointTests
-    : IClassFixture<WebApplicationFactory<Program>>
+    : IClassFixture<FinPilotWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
     public StartOnboardingEndpointTests(
-        WebApplicationFactory<Program> factory)
+        FinPilotWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
