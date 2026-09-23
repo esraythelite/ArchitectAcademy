@@ -6,6 +6,7 @@ using FinPilot.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using FinPilot.Api.ExceptionHandling;
 using FinPilot.Application.Onboarding.GetOnboardingById;
+using FinPilot.Application.Onboarding.VerifyIdentity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IOnboardingRepository, OnboardingRepository>();
 builder.Services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<FinPilotDbContext>());
 builder.Services.AddScoped<StartOnboardingHandler>();
 builder.Services.AddScoped<GetOnboardingByIdHandler>();
+builder.Services.AddScoped<VerifyIdentityHandler>();
 
 
 var app = builder.Build();
