@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using FinPilot.Api.ExceptionHandling;
 using FinPilot.Application.Onboarding.GetOnboardingById;
 using FinPilot.Application.Onboarding.VerifyIdentity;
+using FinPilot.Application.Onboarding.CompleteOnboarding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,7 @@ builder.Services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<
 builder.Services.AddScoped<StartOnboardingHandler>();
 builder.Services.AddScoped<GetOnboardingByIdHandler>();
 builder.Services.AddScoped<VerifyIdentityHandler>();
-
+builder.Services.AddScoped<CompleteOnboardingHandler>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

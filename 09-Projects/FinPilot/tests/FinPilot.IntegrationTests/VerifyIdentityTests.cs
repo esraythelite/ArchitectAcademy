@@ -2,8 +2,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using FinPilot.IntegrationTests.Infrastructure;
-using Microsoft.AspNetCore.Identity;
-using FinPilot.Application.Onboarding.StartOnboarding;
 namespace FinPilot.IntegrationTests;
 
 public sealed class VerifyIdentityTests : IClassFixture<FinPilotWebApplicationFactory>

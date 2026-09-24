@@ -2,6 +2,7 @@ using FinPilot.Application.Onboarding.StartOnboarding;
 using Microsoft.AspNetCore.Mvc;
 using FinPilot.Application.Onboarding.GetOnboardingById;
 using FinPilot.Application.Onboarding.VerifyIdentity;
+using FinPilot.Application.Onboarding.CompleteOnboarding;
 
 namespace FinPilot.Api.Onboarding;
 
@@ -11,14 +12,15 @@ public sealed class OnboardingController : ControllerBase
 {
     private readonly StartOnboardingHandler _handler;
     private readonly GetOnboardingByIdHandler _getOnboardingByIdHandler;
-
     private readonly VerifyIdentityHandler _verifyIdentityHandler;
+    private readonly CompleteOnboardingHandler _completeOnboardingHandler;
 
-    public OnboardingController(StartOnboardingHandler handler, GetOnboardingByIdHandler getOnboardingByIdHandler, VerifyIdentityHandler verifyIdentityHandler)
+    public OnboardingController(StartOnboardingHandler handler, GetOnboardingByIdHandler getOnboardingByIdHandler, VerifyIdentityHandler verifyIdentityHandler, CompleteOnboardingHandler completeOnboardingHandler)
     {
         _handler = handler;
         _getOnboardingByIdHandler = getOnboardingByIdHandler;
         _verifyIdentityHandler = verifyIdentityHandler;
+        _completeOnboardingHandler = completeOnboardingHandler;
     }
 
     [HttpPost]
@@ -56,7 +58,7 @@ public sealed class OnboardingController : ControllerBase
     public async Task<IActionResult> VerifyIdentity(Guid id, CancellationToken cancellationToken)
     {
         var command = new VerifyIdentityCommand(id);
-        
+
         var result = await _verifyIdentityHandler.HandleAsync(command, cancellationToken);
 
         if (result == null)
@@ -66,4 +68,20 @@ public sealed class OnboardingController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpPost("{id:guid}/complete")]
+    public async Task<IActionResult> Complete(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new CompleteOnboardingCommand(id);
+
+        var result = await _completeOnboardingHandler.HandleAsync(command, cancellationToken);
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
 }
